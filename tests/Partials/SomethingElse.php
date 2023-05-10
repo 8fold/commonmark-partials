@@ -11,13 +11,11 @@ class SomethingElse implements PartialInterface
 {
     public function __invoke(PartialInput $input, array $extras = []): string
     {
-        $site = $extras['site'];
-        $request = $extras['request'];
-
-        $s = (string) $site->testing;
-        die(var_dump(
-            $site
-        ));
-        return $input->arguments()->content;
+//         $site = $extras['site'];
+//         $request = $extras['request'];
+//
+//         $s = (string) $site->testing;
+        return '';
+        // return $input->arguments()->content;
     }
 }
