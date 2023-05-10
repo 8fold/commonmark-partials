@@ -2,9 +2,9 @@
 
 namespace Eightfold\CommonMarkPartials;
 
-use StdClass;
+use Eightfold\CommonMarkPartials\PartialInput;
 
 interface PartialInterface
 {
-    public function __invoke(StdClass $internals): string;
+    public function __invoke(PartialInput $input, array $extras = []): string;
 }

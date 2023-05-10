@@ -7,10 +7,17 @@ use Eightfold\CommonMarkPartials\PartialInterface;
 
 use Eightfold\CommonMarkPartials\PartialInput;
 
-class Baseline implements PartialInterface
+class SomethingElse implements PartialInterface
 {
     public function __invoke(PartialInput $input, array $extras = []): string
     {
-        return 'World!';
+        $site = $extras['site'];
+        $request = $extras['request'];
+
+        $s = (string) $site->testing;
+        die(var_dump(
+            $site
+        ));
+        return $input->arguments()->content;
     }
 }

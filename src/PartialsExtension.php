@@ -31,7 +31,8 @@ final class PartialsExtension implements ConfigurableExtensionInterface
         // ignore: insert, id_prefix, fragment_prefix, html_class, title, and
         //     aria_hidden keys from origin
         $builder->addSchema(self::CONFIG_KEY, Expect::structure([
-            'partials' => Expect::arrayOf('string')
+            'partials' => Expect::arrayOf('string'),
+            'extras'   => Expect::arrayOf('object', 'string')
         ]));
     }
 
@@ -47,10 +48,5 @@ final class PartialsExtension implements ConfigurableExtensionInterface
             );
 
         }
-
-        // $environment->addRenderer(
-        //     Partials::class,
-        //     new PartialsRenderer()
-        // );
     }
 }
