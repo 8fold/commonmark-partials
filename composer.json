@@ -14,19 +14,22 @@
   "support": {
   },
   "require": {
-    "php": "^7.3 || ^7.4 || ^8.0 || ^8.1 || ^8.2"
+    "php": "^8.1",
+    "league/commonmark": "^2.3"
   },
   "require-dev": {
-    "phpstan/phpstan": "^1.10",
-    "phpunit/phpunit": "^9.5 || ^10.0",
-    "squizlabs/php_codesniffer": "^3.7"
+    "phpstan/phpstan": "^1.7",
+    "phpunit/phpunit": "^9.5",
+    "squizlabs/php_codesniffer": "^3.6"
   },
   "autoload": {
     "psr-4": {
+      "Eightfold\\CommonMarkPartials\\": "./src"
     }
   },
   "autoload-dev": {
     "psr-4": {
+      "Eightfold\\CommonMarkPartials\\Tests\\": "./tests"
     }
   },
   "config": {

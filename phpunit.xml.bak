@@ -4,10 +4,6 @@
 	bootstrap="vendor/autoload.php"
 	cacheResult="false"
 	colors="true"
-	displayDetailsOnTestsThatTriggerWarnings="true"
-	displayDetailsOnTestsThatTriggerNotices="true"
-	displayDetailsOnTestsThatTriggerErrors="true"
-	displayDetailsOnTestsThatTriggerDeprecations="true"
 	processIsolation="false"
 	stopOnFailure="false"
 	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
@@ -15,7 +11,7 @@
   <coverage/>
   <testsuites>
     <testsuite name="base">
-      <directory suffix="Test.php">./tests/</directory>
+      <directory suffix="Test.php"/>
     </testsuite>
   </testsuites>
   <php>
