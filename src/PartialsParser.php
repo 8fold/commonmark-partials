@@ -17,12 +17,22 @@ final class PartialsParser
 {
     private const REGEX_PATTERN = '{!!([\S\s]*?)!!}';
 
+    /**
+     * @var array<string, string>
+     */
     private array $partialsList = [];
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $extras = [];
 
-    final public function __construct(private readonly array $config)
+    /**
+     * @param array<string, array<string, string|mixed>> $config
+     */
+    final public function __construct(array $config)
     {
+        // @phpstan-ignore-next-line
         $this->partialsList = $config['partials'];
         if (array_key_exists('extras', $config)) {
             $this->extras = $config['extras'];

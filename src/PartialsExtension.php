@@ -15,7 +15,6 @@ use Nette\Schema\Expect;
  */
 use Eightfold\CommonMarkPartials\PartialsPrePocessor;
 use Eightfold\CommonMarkPartials\PartialsParser;
-// use Eightfold\CommonMarkPartials\HeadingPermalinkRenderer;
 
 /**
  * For the most part, this class should match the one from League CommonMark.
@@ -28,8 +27,6 @@ final class PartialsExtension implements ConfigurableExtensionInterface
 
     public function configureSchema(ConfigurationBuilderInterface $builder): void
     {
-        // ignore: insert, id_prefix, fragment_prefix, html_class, title, and
-        //     aria_hidden keys from origin
         $builder->addSchema(self::CONFIG_KEY, Expect::structure([
             'partials' => Expect::arrayOf('string', 'string'),
             'extras'   => Expect::arrayOf('mixed', 'string')
@@ -43,6 +40,7 @@ final class PartialsExtension implements ConfigurableExtensionInterface
             $partialsConfig = (array) $config->get(self::CONFIG_KEY);
             $environment->addEventListener(
                 DocumentPreParsedEvent::class,
+                // @phpstan-ignore-next-line
                 new PartialsPrePocessor(new PartialsParser($partialsConfig)),
                 -100
             );
