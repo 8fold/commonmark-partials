@@ -10,6 +10,7 @@ use Eightfold\CommonMarkPartials\PartialsExtension;
 use Eightfold\CommonMarkPartials\Tests\Partials\Baseline;
 use Eightfold\CommonMarkPartials\Tests\Partials\Something;
 use Eightfold\CommonMarkPartials\Tests\Partials\SomethingElse;
+use Eightfold\CommonMarkPartials\Tests\Partials\ExtrasInstance;
 
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\MarkdownConverter;
@@ -172,16 +173,11 @@ class ExtensionTest extends TestCase
 
     /**
      * @test
-     * @group focus
+     *
+     * League CommonMark converts instances of StdClass to an array.
      */
     public function can_add_extras(): void
     {
-        $site = new StdClass();
-        $site->testing = true;
-
-        $request = new StdClass();
-        $request->testing = true;
-
         $environment = new Environment([
             'partials' => [
                 'partials' => [
@@ -191,8 +187,8 @@ class ExtensionTest extends TestCase
                     'something-else' => SomethingElse::class
                 ],
                 'extras' => [
-                    'site'    => $site,
-                    'request' => $request
+                    'site'    => new ExtrasInstance(),
+                    'request' => new ExtrasInstance()
                 ]
             ]
         ]);
@@ -208,9 +204,10 @@ class ExtensionTest extends TestCase
 
         {!! nonexistent !!}
 
+        {!! something-else !!}
+
         {!! something:content=Some thing. !!}
 
-        {!! something-else !!}
         md;
 
         $expected = <<<html
@@ -218,6 +215,7 @@ class ExtensionTest extends TestCase
         <p>World!</p>
         <p>true</p>
         <p>true</p>
+        <p>Some thing.</p>
 
         html;
 
