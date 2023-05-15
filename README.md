@@ -12,6 +12,8 @@ composer require 8fold/commonmark-partials
 
 ## Usage
 
+⚠️ Warning: Users of this library are responsible for sanitizing content.
+
 Create your partial class:
 
 ```php
