@@ -7,4 +7,3 @@ yarn-error.log
 /.vagrant
 .phpunit.result.cache
 .DS_Store
-composer.lock

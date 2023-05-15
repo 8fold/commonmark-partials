@@ -9,11 +9,15 @@ use Eightfold\CommonMarkPartials\PartialsExtension;
 
 use Eightfold\CommonMarkPartials\Tests\Partials\Baseline;
 use Eightfold\CommonMarkPartials\Tests\Partials\Something;
+use Eightfold\CommonMarkPartials\Tests\Partials\SomethingElse;
+use Eightfold\CommonMarkPartials\Tests\Partials\ExtrasInstance;
 
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\MarkdownConverter;
 
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+
+use StdClass;
 
 class ExtensionTest extends TestCase
 {
@@ -60,8 +64,8 @@ class ExtensionTest extends TestCase
         $environment = new Environment([
             'partials' => [
                 'partials' => [
-                    'all'       => Baseline::class,
-                    'something' => Something::class
+                    'all'            => Baseline::class,
+                    'something'      => Something::class
                 ]
             ]
         ]);
@@ -148,7 +152,6 @@ class ExtensionTest extends TestCase
 
         $converter = new MarkdownConverter($environment);
 
-        // baseline returns "World!"
         $markdown = <<<md
         # Hello
 
@@ -160,6 +163,59 @@ class ExtensionTest extends TestCase
         $expected = <<<html
         <h1>Hello</h1>
         <p>World!</p>
+
+        html;
+
+        $result = $converter->convert($markdown)->getContent();
+
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * @test
+     *
+     * League CommonMark converts instances of StdClass to an array.
+     */
+    public function can_add_extras(): void
+    {
+        $environment = new Environment([
+            'partials' => [
+                'partials' => [
+                    'baseline'    => Baseline::class,
+                    'nonexistent' => 'Nonexistent\Class',
+                    'something' => Something::class,
+                    'something-else' => SomethingElse::class
+                ],
+                'extras' => [
+                    'site'    => new ExtrasInstance(),
+                    'request' => new ExtrasInstance()
+                ]
+            ]
+        ]);
+        $environment->addExtension(new CommonMarkCoreExtension());
+        $environment->addExtension(new PartialsExtension());
+
+        $converter = new MarkdownConverter($environment);
+
+        $markdown = <<<md
+        # Hello
+
+        {!! baseline !!}
+
+        {!! nonexistent !!}
+
+        {!! something-else !!}
+
+        {!! something:content=Some thing. !!}
+
+        md;
+
+        $expected = <<<html
+        <h1>Hello</h1>
+        <p>World!</p>
+        <p>true</p>
+        <p>true</p>
+        <p>Some thing.</p>
 
         html;
 

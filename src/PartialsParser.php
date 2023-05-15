@@ -11,16 +11,32 @@ use League\CommonMark\Input\MarkdownInput;
 use League\CommonMark\Parser\Cursor;
 
 use Eightfold\CommonMarkPartials\PartialInterface;
+use Eightfold\CommonMarkPartials\PartialInput;
 
 final class PartialsParser
 {
     private const REGEX_PATTERN = '{!!([\S\s]*?)!!}';
 
+    /**
+     * @var array<string, string>
+     */
     private array $partialsList = [];
 
-    final public function __construct(private readonly array $config)
+    /**
+     * @var array<string, mixed>
+     */
+    private array $extras = [];
+
+    /**
+     * @param array<string, array<string, string|mixed>> $config
+     */
+    final public function __construct(array $config)
     {
+        // @phpstan-ignore-next-line
         $this->partialsList = $config['partials'];
+        if (array_key_exists('extras', $config)) {
+            $this->extras = $config['extras'];
+        }
     }
 
     public function parse(string $input): MarkdownInput
@@ -35,7 +51,7 @@ final class PartialsParser
         $toUse        = $matches->to_use;
         for ($i = 0; $i < count($toReplace); $i++) {
             $t       = $toUse[$i];
-            $partial = $this->partialToUse($t->reference);
+            $partial = $this->partialToUse($t->reference());
             if ($this->shouldSkipPartial($partial)) {
                 $replacements[$i] = '';
                 continue;
@@ -43,7 +59,7 @@ final class PartialsParser
 
             $p = new $partial();
 
-            $replacements[$i] = $p($toUse[$i]);
+            $replacements[$i] = $p($toUse[$i], $this->extras);
         }
 
         $input = str_replace($toReplace, $replacements, $input);
@@ -63,35 +79,10 @@ final class PartialsParser
 
             $toUse = $matches[1];
             for ($i = 0; $i < count($partials->to_replace); $i++) {
-                $partials->to_use[] = $this->partialWithArgs($toUse[$i]);
+                $partials->to_use[] = new PartialInput($toUse[$i]);
             }
         }
         return $partials;
-    }
-
-    private function partialWithArgs(string $fullReference): StdClass
-    {
-        $pattern   = trim($fullReference);
-        $reference = $pattern;
-        $args      = new StdClass();
-        if (str_contains($pattern, ':')) {
-            list($reference, $a) = explode(':', $pattern, 2);
-            $a = explode(',', $a);
-            foreach ($a as $b) {
-                list($key, $value) = explode('=', $b);
-                $key   = trim($key);
-                $value = trim($value);
-
-                $args->{$key} = $value;
-            }
-        }
-
-        $obj            = new StdClass();
-        $obj->pattern   = $pattern;
-        $obj->reference = $reference;
-        $obj->args      = $args;
-
-        return $obj;
     }
 
     private function partialToUse(string $toUse): string|false

@@ -5,11 +5,11 @@ namespace Eightfold\CommonMarkPartials\Tests\Partials;
 
 use Eightfold\CommonMarkPartials\PartialInterface;
 
-use StdClass;
+use Eightfold\CommonMarkPartials\PartialInput;
 
 class Baseline implements PartialInterface
 {
-    public function __invoke(StdClass $internals): string
+    public function __invoke(PartialInput $input, array $extras = []): string
     {
         return 'World!';
     }
