@@ -23,7 +23,7 @@ namespace My\Namespace;
 
 use Eightfold\CommonMarkPartials\PartialInterface;
 
-class MyPartial
+class MyPartial implements PartialInterface
 {
   public function __invoke(
     PartialInput $input, 
