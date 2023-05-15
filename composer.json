@@ -1,7 +1,7 @@
 {
-  "name": "vendor/project",
+  "name": "8fold/commonmark-partials",
   "type": "library",
-  "description": "",
+  "description": "An extension of PHP League's CommonMark library to enable partials.",
   "license": "mixed",
   "authors": [
     {
