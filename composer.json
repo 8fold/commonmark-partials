@@ -2,7 +2,7 @@
   "name": "8fold/commonmark-partials",
   "type": "library",
   "description": "An extension of PHP League's CommonMark library to enable partials.",
-  "license": "mixed",
+  "license": "MIT",
   "authors": [
     {
       "name": "Josh Bruce",
