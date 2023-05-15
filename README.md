@@ -1,4 +1,4 @@
-# 8fold Partials for {language or framework}
+# 8fold Partials for CommonMark
 
 This library is an extension for the [CommonMark parser](https://github.com/thephpleague/commonmark) from the PHP League, adding the ability to insert renderable partials.
 
