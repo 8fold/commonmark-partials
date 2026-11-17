@@ -104,4 +104,9 @@ We made it possible on one or two sites, which worked well. Now we've made it po
 
 ## Other
 
-{links or descriptions or license, versioning, and governance}
+- [Code of Conduct](https://github.com/8fold/.github/blob/main/CODE_OF_CONDUCT.md)
+- [Contributing](https://github.com/8fold/.github/blob/main/CONTRIBUTING.md)
+- [Governance](https://github.com/8fold/.github/blob/main/GOVERNANCE.md)
+- [Versioning](https://github.com/8fold/.github/blob/main/docs/versioning-base.md)
+- [Security](https://github.com/8fold/.github/blob/main/SECURITY.md)
+
