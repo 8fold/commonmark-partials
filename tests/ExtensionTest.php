@@ -17,14 +17,11 @@ use League\CommonMark\MarkdownConverter;
 
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 
-use StdClass;
+use stdClass;
 
 class ExtensionTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function returning_markdown_is_parsed_and_rendered(): void
+    public function test_returning_markdown_is_parsed_and_rendered(): void
     {
         $environment = new Environment([
             'partials' => [
@@ -53,13 +50,10 @@ class ExtensionTest extends TestCase
 
         $result = $converter->convert($markdown)->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function all_always_uses_the_all_partial_in_config(): void
+    public function test_all_always_uses_the_all_partial_in_config(): void
     {
         $environment = new Environment([
             'partials' => [
@@ -92,13 +86,10 @@ class ExtensionTest extends TestCase
 
         $result = $converter->convert($markdown)->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function can_use_multiple_partials_and_argument_passing(): void
+    public function test_can_use_multiple_partials_and_argument_passing(): void
     {
         $environment = new Environment([
             'partials' => [
@@ -131,13 +122,10 @@ class ExtensionTest extends TestCase
 
         $result = $converter->convert($markdown)->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
-    /**
-     * @test
-     */
-    public function removes_invalid_partial_content(): void
+    public function test_removes_invalid_partial_content(): void
     {
         $environment = new Environment([
             'partials' => [
@@ -168,22 +156,20 @@ class ExtensionTest extends TestCase
 
         $result = $converter->convert($markdown)->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 
     /**
-     * @test
-     *
-     * League CommonMark converts instances of StdClass to an array.
+     * League CommonMark converts instances of stdClass to an array.
      */
-    public function can_add_extras(): void
+    public function test_can_add_extras(): void
     {
         $environment = new Environment([
             'partials' => [
                 'partials' => [
-                    'baseline'    => Baseline::class,
-                    'nonexistent' => 'Nonexistent\Class',
-                    'something' => Something::class,
+                    'baseline'       => Baseline::class,
+                    'nonexistent'    => 'Nonexistent\Class',
+                    'something'      => Something::class,
                     'something-else' => SomethingElse::class
                 ],
                 'extras' => [
@@ -221,6 +207,6 @@ class ExtensionTest extends TestCase
 
         $result = $converter->convert($markdown)->getContent();
 
-        $this->assertSame($expected, $result);
+        parent::assertSame($expected, $result);
     }
 }

@@ -1,113 +1,106 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Eightfold\CommonMarkPartials;
 
 use League\CommonMark\Parser\MarkdownParserInterface;
 
-use StdClass;
+use stdClass;
 
 use League\CommonMark\Input\MarkdownInput;
 use League\CommonMark\Parser\Cursor;
 
 use Eightfold\CommonMarkPartials\PartialInterface;
 use Eightfold\CommonMarkPartials\PartialInput;
+use Eightfold\CommonMarkPartials\PartialMatches;
 
 final class PartialsParser
 {
-    private const REGEX_PATTERN = '{!!([\S\s]*?)!!}';
-
     /**
-     * @var array<string, string>
+     * Config keys
+     *
+     * @param array<string, string> $partials
+     * @param array<string, mixed> $extras
      */
-    private array $partialsList = [];
-
-    /**
-     * @var array<string, mixed>
-     */
-    private array $extras = [];
-
-    /**
-     * @param array<string, array<string, string|mixed>> $config
-     */
-    final public function __construct(array $config)
-    {
-        // @phpstan-ignore-next-line
-        $this->partialsList = $config['partials'];
-        if (array_key_exists('extras', $config)) {
-            $this->extras = $config['extras'];
-        }
+    final public function __construct(
+        private readonly array $partials,
+        private readonly array $extras = []
+    ) {
     }
 
     public function parse(string $input): MarkdownInput
     {
-        $matches = $this->matchesInContent($input);
-        if (count($matches->to_replace) === 0) {
+        $matches = new PartialMatches($input);
+        $totalToReplace = $matches->totalToReplace();
+        if ($totalToReplace === 0) {
             return new MarkdownInput($input);
         }
 
         $replacements = [];
-        $toReplace    = $matches->to_replace;
-        $toUse        = $matches->to_use;
-        for ($i = 0; $i < count($toReplace); $i++) {
-            $t       = $toUse[$i];
-            $partial = $this->partialToUse($t->reference());
-            if ($this->shouldSkipPartial($partial)) {
+        for ($i = 0; $i < $totalToReplace; $i++) {
+            $partialInput = $matches->inputAt($i);
+
+            $partialClassName = self::partialToUse($partialInput->reference());
+            if (self::shouldSkipPartial($partialClassName)) {
                 $replacements[$i] = '';
                 continue;
             }
 
-            $p = new $partial();
+            $p = new $partialClassName();
+            if (is_callable($p) === false) {
+                $replacements[$i] = '';
+                continue;
+            }
 
-            $replacements[$i] = $p($toUse[$i], $this->extras);
+            $replacement = $p($partialInput, $this->extras);
+            if (is_string($replacement) === false) {
+                $replacements[$i] = '';
+                continue;
+            }
+            $replacements[$i] = $replacement;
         }
 
-        $input = str_replace($toReplace, $replacements, $input);
+        $input = str_replace($matches->toReplace(), $replacements, $input);
 
         return new MarkdownInput($input);
     }
 
-    private function matchesInContent(string $markdown): StdClass
+    private function partialToUse(string $reference): string
     {
-        $matches = [];
-        preg_match_all('/' . self::REGEX_PATTERN . '/', $markdown, $matches);
-
-        $partials = new StdClass();
-        if (count($matches) > 0) {
-            $partials->to_replace = $matches[0];
-            $partials->to_use     = [];
-
-            $toUse = $matches[1];
-            for ($i = 0; $i < count($partials->to_replace); $i++) {
-                $partials->to_use[] = new PartialInput($toUse[$i]);
-            }
-        }
-        return $partials;
-    }
-
-    private function partialToUse(string $toUse): string|false
-    {
-        if (array_key_exists('all', $this->partialsList)) {
-            return $this->partialsList['all'];
+        if (array_key_exists('all', $this->partials)) {
+            return $this->partials['all'];
         }
 
-        if (array_key_exists($toUse, $this->partialsList)) {
-            return $this->partialsList[$toUse];
+        if (array_key_exists($reference, $this->partials)) {
+            return $this->partials[$reference];
         }
-        return false;
+        return '';
     }
 
     private function shouldSkipPartial(string|null|false $partial): bool
     {
-        if (
-            is_string($partial) and
-            class_exists($partial) and
-            $interfaces = class_implements($partial) and
-            is_array($interfaces) and
-            in_array(PartialInterface::class, $interfaces)
-        ) {
-            return false;
+        if (is_string($partial) === false) {
+            return true;
         }
-        return true;
+
+        if ($partial === '') {
+            return true;
+        }
+
+        if (class_exists($partial) === false) {
+            return true;
+        }
+
+        $p = new $partial();
+        if (is_callable($p) === false) {
+            return true;
+        }
+
+        $interfaces = class_implements($partial);
+        return (
+            is_array($interfaces)
+            and in_array(PartialInterface::class, $interfaces, true)
+        ) === false;
     }
 }

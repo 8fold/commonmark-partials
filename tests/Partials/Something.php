@@ -11,6 +11,7 @@ class Something implements PartialInterface
 {
     public function __invoke(PartialInput $input, array $extras = []): string
     {
-        return $input->arguments()->content;
+        $c = $input->arguments()->content;
+        return (is_string($c)) ? $c : '';
     }
 }
