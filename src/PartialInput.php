@@ -15,7 +15,7 @@ final class PartialInput
     private stdClass $arguments;
 
     final public function __construct(
-        private readonly string $fullReference
+        private string $fullReference
     ) {
     }
 

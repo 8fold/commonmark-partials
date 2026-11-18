@@ -10,7 +10,7 @@ use Eightfold\CommonMarkPartials\PartialsParser;
 
 final class PartialsPrePocessor
 {
-    public function __construct(private readonly PartialsParser $parser)
+    public function __construct(private PartialsParser $parser)
     {
     }
 

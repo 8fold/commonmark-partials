@@ -17,7 +17,7 @@ final class PartialMatches
     private array $inputsToUse = [];
 
     public function __construct(
-        private readonly string $markdown
+        private string $markdown
     ) {
         $matches = [];
         preg_match_all('/' . self::REGEX_PATTERN . '/', $markdown, $matches);

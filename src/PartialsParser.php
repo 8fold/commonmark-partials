@@ -24,8 +24,8 @@ final class PartialsParser
      * @param array<string, mixed> $extras
      */
     final public function __construct(
-        private readonly array $partials,
-        private readonly array $extras = []
+        private array $partials,
+        private array $extras = []
     ) {
     }
 
