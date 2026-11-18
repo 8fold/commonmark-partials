@@ -1,20 +1,21 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Eightfold\CommonMarkPartials;
 
-use StdClass;
+use stdClass;
 
-class PartialInput
+final class PartialInput
 {
     private string $raw;
 
     private string $reference;
 
-    private StdClass $arguments;
+    private stdClass $arguments;
 
     final public function __construct(
-        private readonly string $fullReference
+        private string $fullReference
     ) {
     }
 
@@ -39,26 +40,26 @@ class PartialInput
         return $this->reference;
     }
 
-    public function arguments(): StdClass
+    public function arguments(): stdClass
     {
         if (isset($this->arguments) === false) {
             $r = $this->raw();
             if (str_contains($r, ':') === false) {
-                return (object) [];
+                return new stdClass();
             }
 
             list($ignore, $args) = explode(':', $r, 2);
             $argList = explode(',', $args);
 
-            $build = [];
+            $build = new stdClass();
             foreach ($argList as $arg) {
                 list($key, $value) = explode('=', $arg);
                 $key   = trim($key);
                 $value = trim($value);
-                $build[$key] = $value;
+                $build->{$key} = $value;
             }
 
-            $this->arguments = (object) $build;
+            $this->arguments = $build;
         }
         return $this->arguments;
     }
